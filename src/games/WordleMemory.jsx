@@ -32,7 +32,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#444] text-white font-inter flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-bgDark text-white font-inter flex flex-col items-center justify-center p-4">
       {gameComplete ? (
         <div className="text-center bg-[#333] rounded-xl p-6 w-full max-w-md shadow-lg">
           <h1 className="text-4xl font-bold mb-4 text-green-400">🎉 Game Over! 🎉</h1>
@@ -305,7 +305,7 @@ function WordleMemoryGame({ onGameComplete }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#444] flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-bgDark flex items-center justify-center px-4 py-8">
       <div className="bg-[#333] rounded-xl p-6 w-full max-w-md text-center shadow-lg">
         <h1 className="text-white text-2xl font-bold mb-1">Wordle Memory Arisha</h1>
         <p className="text-sm text-gray-300 mb-4">
