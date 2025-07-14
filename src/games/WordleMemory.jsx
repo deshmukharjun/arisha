@@ -86,12 +86,26 @@ function WordleMemoryGame({ onGameComplete }) {
     return result;
   }, []); // No dependencies, as it only uses its arguments
 
-  // Handles input changes for individual cells, including auto-focusing
+  // Handles input changes for individual cells, including auto-focusing and validation
   const handleInputChange = (e, type, index) => {
-    const value = e.target.value.toUpperCase(); // Convert input to uppercase
+    let value = e.target.value;
     let currentInputArray = type === 'month' ? [...currentMonthInput] : [...currentYearInput];
     const inputRefs = type === 'month' ? monthInputRefs : yearInputRefs;
     const inputLength = type === 'month' ? MONTH_LENGTH : YEAR_LENGTH;
+
+    // Validate input based on type
+    if (type === 'month') {
+      value = value.toUpperCase(); // Convert to uppercase for months
+      // Only allow alphabetic characters for month
+      if (!value.match(/^[A-Z]$/) && value !== '') {
+        return; // Ignore invalid input
+      }
+    } else { // type === 'year'
+      // Only allow numeric characters for year
+      if (!value.match(/^[0-9]$/) && value !== '') {
+        return; // Ignore invalid input
+      }
+    }
 
     // Handle cases where more than one character is pasted/autofilled
     if (value.length > 1) {
@@ -255,7 +269,9 @@ function WordleMemoryGame({ onGameComplete }) {
         {Array.from({ length: length }).map((_, i) => (
           <input
             key={`${type}-${rowIndex}-${i}`} // Unique key for each input cell
-            type="text"
+            type={type === 'month' ? 'text' : 'tel'} // 'tel' type brings up numeric keyboard on mobile
+            inputMode={type === 'month' ? 'text' : 'numeric'} // Hint for mobile keyboard
+            pattern={type === 'month' ? '[A-Za-z]{1}' : '[0-9]{1}'} // Pattern for client-side validation
             maxLength={1} // Only one character per cell
             value={displayArray[i] || ''} // Display current value or empty string
             onKeyDown={(e) => isCurrentRow && handleBackspace(e, type, i)} // Handle backspace and Enter
