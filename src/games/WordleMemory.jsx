@@ -71,19 +71,15 @@ function WordleMemoryGame({ onGameComplete }) {
   // Refs for focusing input cells
   const monthInputRefs = useRef([]);
   const yearInputRefs = useRef([]);
-  const activeInputTypeRef = useRef('month'); // 'month' or 'year'
-  const activeInputIndexRef = useRef(0);
+  // We no longer need activeInputTypeRef and activeInputIndexRef with the new input handling approach
 
   const currentData = memoryGameData[currentRoundIndex];
 
   // Effect to focus the first input cell on round change or initial load
   useEffect(() => {
     if (!roundOver) {
-      // Focus the first month input cell
       if (monthInputRefs.current[0]) {
         monthInputRefs.current[0].focus();
-        activeInputTypeRef.current = 'month';
-        activeInputIndexRef.current = 0;
       }
     }
   }, [currentRoundIndex, roundOver]);
@@ -120,59 +116,71 @@ function WordleMemoryGame({ onGameComplete }) {
     return result;
   }, []);
 
-  // Handle key presses for both month and year inputs
-  const handleKeyDown = (e, type, index) => {
-    activeInputTypeRef.current = type;
-    activeInputIndexRef.current = index;
-
+  // Handle changes for individual input cells
+  const handleInputChange = (e, type, index) => {
+    const value = e.target.value.toUpperCase(); // Convert to uppercase immediately
     let currentInputArray = type === 'month' ? [...currentMonthInput] : [...currentYearInput];
-    const inputLength = type === 'month' ? MONTH_LENGTH : YEAR_LENGTH;
     const inputRefs = type === 'month' ? monthInputRefs : yearInputRefs;
+    const inputLength = type === 'month' ? MONTH_LENGTH : YEAR_LENGTH;
 
+    if (value.length > 1) {
+      // This handles autofill or pasting, take only the last character
+      currentInputArray[index] = value.slice(-1);
+    } else {
+      currentInputArray[index] = value;
+    }
+
+    if (type === 'month') {
+      setCurrentMonthInput(currentInputArray);
+    } else {
+      setCurrentYearInput(currentInputArray);
+    }
+
+    // Auto-focus next input if current one is filled
+    if (value && index < inputLength - 1) {
+      inputRefs.current[index + 1].focus();
+    } else if (value && index === inputLength - 1) {
+      // If at the end of month input, move to year input
+      if (type === 'month' && yearInputRefs.current[0]) {
+        yearInputRefs.current[0].focus();
+      } else if (type === 'year') {
+        // If at the end of year input, and both are full, submit
+        if (currentMonthInput.every(char => char !== '') && currentInputArray.every(char => char !== '')) {
+            handleSubmitGuess();
+        }
+      }
+    }
+  };
+
+  // Handle backspace for individual input cells
+  const handleBackspace = (e, type, index) => {
     if (e.key === "Backspace") {
       e.preventDefault(); // Prevent default browser back navigation
+      let currentInputArray = type === 'month' ? [...currentMonthInput] : [...currentYearInput];
+      const inputRefs = type === 'month' ? monthInputRefs : yearInputRefs;
+
       if (currentInputArray[index]) {
         currentInputArray[index] = "";
       } else if (index > 0) {
         currentInputArray[index - 1] = "";
         inputRefs.current[index - 1].focus();
-        activeInputIndexRef.current = index - 1;
-      } else if (index === 0 && type === 'year') { // If at start of year, move to last month char
+      } else if (index === 0 && type === 'year') {
+        // If at start of year input, move to last month input
         if (monthInputRefs.current[MONTH_LENGTH - 1]) {
           monthInputRefs.current[MONTH_LENGTH - 1].focus();
-          activeInputTypeRef.current = 'month';
-          activeInputIndexRef.current = MONTH_LENGTH - 1;
         }
       }
-      if (type === 'month') setCurrentMonthInput(currentInputArray);
-      else setCurrentYearInput(currentInputArray);
-    } else if (/^[a-zA-Z0-9]$/.test(e.key)) {
-      e.preventDefault(); // Prevent default input behavior
-      currentInputArray[index] = e.key.toUpperCase();
-      if (type === 'month') setCurrentMonthInput(currentInputArray);
-      else setCurrentYearInput(currentInputArray);
 
-      if (index < inputLength - 1) {
-        inputRefs.current[index + 1].focus();
-        activeInputIndexRef.current = index + 1;
-      } else if (index === inputLength - 1) { // If at end of current input type
-        if (type === 'month' && yearInputRefs.current[0]) { // Move to first year input
-          yearInputRefs.current[0].focus();
-          activeInputTypeRef.current = 'year';
-          activeInputIndexRef.current = 0;
-        } else if (type === 'year') { // If at end of year input, attempt submission
-          if (currentMonthInput.every(char => char !== '') && currentYearInput.every(char => char !== '')) {
-            handleSubmitGuess();
-          }
-        }
-      }
+      if (type === 'month') setCurrentMonthInput(currentInputArray);
+      else setCurrentYearInput(currentInputArray);
     } else if (e.key === "Enter") {
-      e.preventDefault(); // Prevent new line in input
-      if (currentMonthInput.every(char => char !== '') && currentYearInput.every(char => char !== '')) {
-        handleSubmitGuess();
-      }
+        e.preventDefault();
+        if (currentMonthInput.every(char => char !== '') && currentYearInput.every(char => char !== '')) {
+            handleSubmitGuess();
+        }
     }
   };
+
 
   // Handles the submission of a combined month and year guess
   const handleSubmitGuess = () => {
@@ -277,8 +285,8 @@ function WordleMemoryGame({ onGameComplete }) {
             type="text"
             maxLength={1}
             value={displayArray[i] || ''}
-            onKeyDown={(e) => isCurrentRow && handleKeyDown(e, type, i)}
-            onChange={() => {}} // onChange is required for controlled inputs, but logic is in onKeyDown
+            onKeyDown={(e) => isCurrentRow && handleBackspace(e, type, i)} // Only handle backspace and enter with onKeyDown
+            onChange={(e) => isCurrentRow && handleInputChange(e, type, i)} // Handle character input with onChange
             ref={el => {
               if (isCurrentRow) {
                 inputRefs.current[i] = el;
