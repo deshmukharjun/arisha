@@ -9,9 +9,19 @@ import MemoryLane from "./games/MemoryLane";
 
 function WelcomePage() {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   // Get window dimensions for confetti
   const { innerWidth: width, innerHeight: height } = window;
+
+  const handleCelebrateClick = () => {
+    setShowModal(true);
+  };
+
+  const handleChoice = (route) => {
+    setShowModal(false);
+    navigate(route);
+  };
 
   return (
     <div className="min-h-screen bg-bgDark text-white flex items-center justify-center px-4 py-8 relative overflow-hidden">
@@ -49,12 +59,46 @@ function WelcomePage() {
           Happy 10 Year Anniversary!
         </p>
         <button
-          onClick={() => navigate("/memory")}
+          onClick={handleCelebrateClick}
           className="bg-highlight text-black px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-black transition active:scale-95 w-full sm:w-auto text-lg sm:text-base"
         >
           Let's Celebrate!
         </button>
       </div>
+      {/* Modal Popup */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="bg-white text-black rounded-lg shadow-xl p-8 max-w-xs w-full text-center animate-fade-in">
+            <h2 className="text-2xl font-bold mb-4">What do you want to play?</h2>
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => handleChoice('/memory')}
+                className="bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 px-4 rounded transition active:scale-95"
+              >
+                Wordle Memory
+              </button>
+              <button
+                onClick={() => handleChoice('/connections')}
+                className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded transition active:scale-95"
+              >
+                Connections
+              </button>
+              <button
+                onClick={() => handleChoice('/memory-lane')}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition active:scale-95"
+              >
+                Memory Lane
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="mt-2 text-gray-500 hover:text-black text-sm underline"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -86,6 +130,17 @@ const IMAGES_TO_PRELOAD = [
   "/photos/memory1.png",
   "/photos/memory2.png",
   "/photos/memory3.png",
+  "/photos/2015.png",
+  "/photos/2016.png",
+  "/photos/2017.png",
+  "/photos/2018.png",
+  "/photos/2019.png",
+  "/photos/2020.png",
+  "/photos/2021.png",
+  "/photos/2022.png",
+  "/photos/2023.png",
+  "/photos/2024.png",
+  "/photos/2025.png",
   "/vite.svg"
 ];
 
