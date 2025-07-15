@@ -1,8 +1,12 @@
+// App.jsx
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
-import WordleMemory from "./games/WordleMemory";
+import WordleMemoryPage from "./games/WordleMemory"; // Correct way to import a default export
 import ConnectionsPage from "./games/ConnectionsGame";
-import welcomeImage from "../public/photos/welcome.jpg"; // Replace with your actual image path
-import Confetti from 'react-confetti'; // Import Confetti
+import welcomeImage from "/photos/welcome.jpg";
+import Confetti from 'react-confetti';
+import { useState } from "react"; // Ensure useState is imported if used in App
+
+// ... (rest of your App.jsx code) ...
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -11,7 +15,7 @@ function WelcomePage() {
   const { innerWidth: width, innerHeight: height } = window;
 
   return (
-    <div className="min-h-screen bg-bgDark text-white flex items-center justify-center px-4 py-8 relative overflow-hidden"> {/* Added relative and overflow-hidden */}
+    <div className="min-h-screen bg-bgDark text-white flex items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* Confetti will appear in the background */}
       <Confetti
         width={width}
@@ -37,12 +41,12 @@ function WelcomePage() {
           className="w-full h-full object-cover rounded-lg mb-6 shadow-md"
         />
         {/* Updated alignment for Hey Mauuu and Vite SVG */}
-        <div className="flex items-center justify-center mb-2"> {/* Added items-center and justify-center */}
-          <h1 className="text-3xl font-bold mb-0 mr-2">Hey Mau</h1> {/* Removed mb-2, added mr-2 for spacing */}
+        <div className="flex items-center justify-center mb-2">
+          <h1 className="text-3xl font-bold mb-0 mr-2">Hey Mau</h1>
           <img
             src="/vite.svg"
             alt="Welcome"
-            className="w-[35px] h-[35px] object-cover rounded-lg shadow-md" // Removed mb-6
+            className="w-[35px] h-[35px] object-cover rounded-lg shadow-md"
           />
         </div>
 
@@ -62,15 +66,29 @@ function WelcomePage() {
 
 
 function App() {
+  // Remove useNavigate from here
+  // Handlers for navigation are now passed as props from within routed components
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/memory" element={<WordleMemory onGameComplete={() => window.location.href = '/connections'} />} />
-        <Route path="/connections" element={<ConnectionsPage />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<WelcomePage />} />
+      <Route
+        path="/memory"
+        element={
+          <WordleMemoryPage
+            onGameComplete={() => {}}
+            onPlayConnections={() => { window.location.href = '/connections'; }}
+          />
+        }
+      />
+      <Route path="/connections" element={<ConnectionsPage />} />
+    </Routes>
   );
 }
 
-export default App;
+export default function AppWithRouter() {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}
