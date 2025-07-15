@@ -19,3 +19,31 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Entry Animations for WelcomePage */
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.4,0,0.2,1) both;
+}
+.animate-fade-in-delay {
+  animation: fadeIn 1.2s cubic-bezier(0.4,0,0.2,1) both;
+  animation-delay: 0.4s;
+}
+.animate-slide-in-up {
+  animation: slideInUp 0.8s cubic-bezier(0.4,0,0.2,1) both;
+}
+.animate-slide-in-down {
+  animation: slideInDown 0.8s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-40px); }
+  to { opacity: 1; transform: translateY(0); }
+}

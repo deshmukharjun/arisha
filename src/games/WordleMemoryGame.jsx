@@ -296,6 +296,10 @@ function WordleMemoryGame({ onGameComplete }) {
   return (
     <div className="min-h-screen bg-bgDark flex items-center justify-center px-4 py-8">
       <div className="bg-[#333] rounded-xl p-6 w-full max-w-md text-center shadow-lg">
+        {/* Progress Indicator */}
+        <div className="mb-2 text-yellow-300 text-base sm:text-lg font-semibold animate-fade-in">
+          Memory {currentRoundIndex + 1} of {memoryGameData.length}
+        </div>
         <h1 className="text-white text-2xl font-bold mb-1">Wordle Memory Arisha</h1>
         <p className="text-sm text-gray-300 mb-4">
           guess the correct month and year
@@ -344,7 +348,7 @@ function WordleMemoryGame({ onGameComplete }) {
           <>
             <button
               onClick={handleSubmitGuess}
-              className="bg-black text-white px-6 py-2 rounded-md font-semibold hover:bg-white hover:text-black transition text-sm sm:text-base"
+              className="bg-black text-white px-6 py-3 sm:px-6 sm:py-2 rounded-md font-semibold hover:bg-white hover:text-black transition text-base sm:text-base active:scale-95 w-full sm:w-auto"
               // Button is disabled until both month and year inputs are fully filled
               disabled={currentMonthInput.some(char => char === '') || currentYearInput.some(char => char === '')}
             >

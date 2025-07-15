@@ -179,6 +179,11 @@ export default function ConnectionsGame() {
     setFeedbackMessage("Selection cleared.");
   }, [isGameOver]); // Dependency
 
+  // Add back to home navigation
+  const handleBackToHome = () => {
+    window.location.href = "/";
+  };
+
   // --- UI Helpers ---
   /**
    * Determines the background color for the mistake indicator dots.
@@ -191,6 +196,13 @@ export default function ConnectionsGame() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white p-4 sm:p-6 flex flex-col items-center justify-center font-sans">
+      {/* Back to Home Button */}
+      <button
+        onClick={handleBackToHome}
+        className="absolute top-4 left-4 bg-yellow-400 text-black px-4 py-2 rounded-md font-semibold shadow-md hover:bg-yellow-300 transition active:scale-95 z-20 text-base sm:text-base"
+      >
+        ← Home
+      </button>
       <div className="w-full max-w-lg bg-neutral-800 rounded-lg shadow-xl p-4 sm:p-6 flex flex-col gap-4">
         {/* Header Section: Title and Mistakes Counter */}
         <div className="flex justify-between items-center mb-4">
@@ -229,7 +241,7 @@ export default function ConnectionsGame() {
                 onClick={() => handleWordClick(wordObj)}
                 disabled={isGameOver} // Disable buttons if game is over
                 className={`
-                  p-2 sm:p-3 rounded-md text-center font-semibold text-xs sm:text-sm cursor-pointer
+                  p-3 sm:p-3 rounded-md text-center font-semibold text-base sm:text-sm cursor-pointer
                   transition-all duration-150 ease-in-out
                   shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400
                   ${isWordSelected
@@ -237,6 +249,7 @@ export default function ConnectionsGame() {
                     : "bg-neutral-700 text-gray-100 hover:bg-neutral-600" // Styling for unselected words
                   }
                   ${isGameOver ? "opacity-70 cursor-not-allowed" : ""} {/* Dim and disable if game over */}
+                  active:scale-95
                 `}
               >
                 {wordObj.word}
@@ -257,21 +270,21 @@ export default function ConnectionsGame() {
           <button
             onClick={handleShuffleWords}
             disabled={isGameOver}
-            className="px-3 py-2 sm:px-4 sm:py-2 bg-neutral-600 text-white rounded-md font-semibold text-xs sm:text-sm hover:bg-neutral-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-3 sm:px-4 sm:py-2 bg-neutral-600 text-white rounded-md font-semibold text-base sm:text-sm hover:bg-neutral-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           >
             Shuffle
           </button>
           <button
             onClick={handleDeselectAllWords}
             disabled={selectedWords.length === 0 || isGameOver}
-            className="px-3 py-2 sm:px-4 sm:py-2 bg-neutral-600 text-white rounded-md font-semibold text-xs sm:text-sm hover:bg-neutral-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-3 sm:px-4 sm:py-2 bg-neutral-600 text-white rounded-md font-semibold text-base sm:text-sm hover:bg-neutral-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           >
             Deselect All
           </button>
           <button
             onClick={handleSubmitGroup}
             disabled={selectedWords.length !== 4 || isGameOver}
-            className="px-4 py-2 sm:px-6 sm:py-2 bg-blue-600 text-white rounded-md font-semibold text-sm sm:text-base hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 sm:px-6 sm:py-2 bg-blue-600 text-white rounded-md font-semibold text-base sm:text-base hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           >
             Submit
           </button>

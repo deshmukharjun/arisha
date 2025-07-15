@@ -18,42 +18,38 @@ function WelcomePage() {
       <Confetti
         width={width}
         height={height}
-        numberOfPieces={200} // Adjust the number of confetti pieces
-        gravity={0.08} // Adjust the fall speed (lower value means slower)
-        confettiSource={{ // Adjust where confetti starts
+        numberOfPieces={120} // Slightly reduced for mobile performance
+        gravity={0.07}
+        confettiSource={{
             x: 0,
             y: 0,
             w: width,
             h: height,
         }}
-        wind={0.01} // Add a slight wind effect
-        initialVelocityX={5} // Initial horizontal velocity
-        initialVelocityY={10} // Initial vertical velocity
+        wind={0.01}
+        initialVelocityX={4}
+        initialVelocityY={8}
       />
-
-      {/* Your existing welcome page content */}
-      <div className="text-center max-w-md z-10 p-6 rounded-lg bg-bgDark bg-opacity-80 shadow-lg">
+      <div className="text-center max-w-md z-10 p-6 rounded-lg bg-bgDark bg-opacity-80 shadow-lg animate-fade-in">
         <img
           src={welcomeImage}
           alt="Welcome"
-          className="w-full h-full object-cover rounded-lg mb-6 shadow-md"
+          className="w-full h-full object-cover rounded-lg mb-6 shadow-md animate-slide-in-down"
         />
-        {/* Updated alignment for Hey Mauuu and Vite SVG */}
-        <div className="flex items-center justify-center mb-2">
-          <h1 className="text-3xl font-bold mb-0 mr-2">Hey Mau</h1>
+        <div className="flex items-center justify-center mb-2 animate-fade-in-delay">
+          <h1 className="text-3xl font-bold mb-0 mr-2 animate-slide-in-up">Hey Mau</h1>
           <img
             src="/vite.svg"
             alt="Welcome"
-            className="w-[35px] h-[35px] object-cover rounded-lg shadow-md"
+            className="w-[35px] h-[35px] object-cover rounded-lg shadow-md animate-slide-in-up"
           />
         </div>
-
-        <p className="text-lg text-gray-300 mb-8">
+        <p className="text-lg text-gray-300 mb-8 animate-fade-in-delay">
           Happy 10 Year Anniversary!
         </p>
         <button
           onClick={() => navigate("/memory")}
-          className="bg-highlight text-black px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-black transition"
+          className="bg-highlight text-black px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-black transition active:scale-95 w-full sm:w-auto text-lg sm:text-base"
         >
           Let's Celebrate!
         </button>
