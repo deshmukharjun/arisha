@@ -2,11 +2,9 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import WordleMemoryPage from "./games/WordleMemory"; // Correct way to import a default export
 import ConnectionsPage from "./games/ConnectionsGame";
-import welcomeImage from "/photos/welcome.jpg";
+import welcomeImage from "/photos/welcomefinal.png";
 import Confetti from 'react-confetti';
 import { useState } from "react"; // Ensure useState is imported if used in App
-
-// ... (rest of your App.jsx code) ...
 
 function WelcomePage() {
   const navigate = useNavigate();
