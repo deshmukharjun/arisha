@@ -92,10 +92,10 @@ export default function ConnectionsGame() {
     if (solvedGroups.length === 4) {
       setHasWon(true);
       setIsGameOver(true);
-      setFeedbackMessage("🎉 You found all connections! You win!");
+      setFeedbackMessage("Yayy! You win!");
     } else if (mistakesLeft === 0) {
       setIsGameOver(true);
-      setFeedbackMessage("Game Over! You ran out of mistakes.");
+      setFeedbackMessage("Game Over Mau! You ran out of mistakes.");
     }
   }, [solvedGroups, mistakesLeft]); // Dependencies: re-run when these states change
 
@@ -201,7 +201,7 @@ export default function ConnectionsGame() {
         onClick={handleBackToHome}
         className="absolute top-4 left-4 bg-yellow-400 text-black px-4 py-2 rounded-md font-semibold shadow-md hover:bg-yellow-300 transition active:scale-95 z-20 text-base sm:text-base"
       >
-        ← Home
+        Home
       </button>
       <div className="w-full max-w-lg bg-neutral-800 rounded-lg shadow-xl p-4 sm:p-6 flex flex-col gap-4">
         {/* Header Section: Title and Mistakes Counter */}
@@ -224,7 +224,7 @@ export default function ConnectionsGame() {
         {solvedGroups.map((group) => (
           <div
             key={group.name} // Unique key for each solved group
-            className={`w-full p-2 sm:p-3 rounded-md text-center text-black font-semibold text-base sm:text-lg transition-all duration-300 ease-in-out ${DIFFICULTY_COLORS[group.difficulty]}`}
+            className={`w-full p-2 sm:p-3 rounded-md text-center text-black font-semibold text-base sm:text-xs transition-all duration-300 ease-in-out ${DIFFICULTY_COLORS[group.difficulty]}`}
           >
             <p className="text-xs sm:text-sm font-normal opacity-90">{group.name.toUpperCase()}</p>
             <p className="font-bold text-sm sm:text-base">{group.words.join(", ")}</p>
@@ -295,7 +295,7 @@ export default function ConnectionsGame() {
           <div className="mt-6 text-center">
             {hasWon ? (
               <p className="text-lg sm:text-xl font-bold animate-pulse text-green-400">
-                🎉 Congratulations! You solved it! 🎉
+                Congratulations Mau! You solved it!
               </p>
             ) : (
               <p className="text-lg sm:text-xl font-bold text-red-400">

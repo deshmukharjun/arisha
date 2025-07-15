@@ -29,7 +29,7 @@ function WordleMemoryPage({ onGameComplete, onPlayConnections }) {
         onClick={handleBackToHome}
         className="absolute top-4 left-4 bg-yellow-400 text-black px-4 py-2 rounded-md font-semibold shadow-md hover:bg-yellow-300 transition active:scale-95 z-20 text-base sm:text-base"
       >
-        ← Home
+        Home
       </button>
       {allRoundsCompleted ? (
         <div className="text-center bg-[#333] rounded-xl p-6 w-full max-w-md shadow-lg">
