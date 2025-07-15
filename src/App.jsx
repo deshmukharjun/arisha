@@ -5,6 +5,7 @@ import ConnectionsPage from "./games/ConnectionsGame";
 import welcomeImage from "/photos/welcomefinal.png";
 import Confetti from 'react-confetti';
 import { useEffect, useState } from "react"; // Ensure useState is imported if used in App
+import MemoryLane from "./games/MemoryLane";
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ function App() {
         }
       />
       <Route path="/connections" element={<ConnectionsPage />} />
+      <Route path="/memory-lane" element={<MemoryLane />} />
     </Routes>
   );
 }

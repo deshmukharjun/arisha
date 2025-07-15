@@ -195,7 +195,7 @@ export default function ConnectionsGame() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white p-4 sm:p-6 flex flex-col items-center justify-center font-sans">
+    <div className="min-h-screen bg-neutral-900 text-white p-2 sm:p-3 flex flex-col items-center justify-center font-sans">
       {/* Back to Home Button */}
       <button
         onClick={handleBackToHome}
@@ -203,7 +203,7 @@ export default function ConnectionsGame() {
       >
         Home
       </button>
-      <div className="w-full max-w-lg bg-neutral-800 rounded-lg shadow-xl p-4 sm:p-6 flex flex-col gap-4">
+      <div className="w-full max-w-lg bg-neutral-900 rounded-lg shadow-xl flex flex-col gap-5">
         {/* Header Section: Title and Mistakes Counter */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-100">Connections</h1>
@@ -232,7 +232,7 @@ export default function ConnectionsGame() {
         ))}
 
         {/* Word Grid: Displays the unsolved words */}
-        <div className="grid grid-cols-4 gap-2 w-full">
+        <div className="grid grid-cols-4 gap-1 w-full">
           {unsolvedWords.map((wordObj) => {
             const isWordSelected = selectedWords.includes(wordObj);
             return (
@@ -241,7 +241,7 @@ export default function ConnectionsGame() {
                 onClick={() => handleWordClick(wordObj)}
                 disabled={isGameOver} // Disable buttons if game is over
                 className={`
-                  p-3 sm:p-3 rounded-md text-center font-semibold text-base sm:text-sm cursor-pointer
+                  p-3 sm:p-3 rounded-md text-center font-semibold text-[12px] sm:text-[18px] cursor-pointer
                   transition-all duration-150 ease-in-out
                   shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400
                   ${isWordSelected
@@ -307,6 +307,13 @@ export default function ConnectionsGame() {
               className="mt-4 px-4 py-2 sm:px-6 sm:py-3 bg-highlight text-black font-semibold rounded-md hover:bg-white transition-colors duration-200"
             >
               Play Again
+            </button>
+            {/* Go To Memory Lane Button */}
+            <button
+              onClick={() => window.location.href = '/memory-lane'}
+              className="mt-4 w-full px-4 py-3 bg-yellow-400 text-black font-bold rounded-md shadow-md hover:bg-yellow-300 transition-colors duration-200 text-lg"
+            >
+              Go To Memory Lane
             </button>
           </div>
         )}
