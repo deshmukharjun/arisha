@@ -4,7 +4,7 @@ import WordleMemoryPage from "./games/WordleMemory"; // Correct way to import a 
 import ConnectionsPage from "./games/ConnectionsGame";
 import welcomeImage from "/photos/welcomefinal.png";
 import Confetti from 'react-confetti';
-import { useState } from "react"; // Ensure useState is imported if used in App
+import { useEffect, useState } from "react"; // Ensure useState is imported if used in App
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -83,7 +83,44 @@ function App() {
   );
 }
 
+const IMAGES_TO_PRELOAD = [
+  "/photos/welcomefinal.png", // or change to your latest welcome image
+  "/photos/memory1.png",
+  "/photos/memory2.png",
+  "/photos/memory3.png",
+  "/vite.svg"
+];
+
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-bgDark">
+      <div className="flex flex-col items-center">
+        <div className="loader mb-4" />
+        <span className="text-white text-lg font-semibold">Loading...</span>
+      </div>
+    </div>
+  );
+}
+
 export default function AppWithRouter() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let loaded = 0;
+    IMAGES_TO_PRELOAD.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = img.onerror = () => {
+        loaded++;
+        if (loaded === IMAGES_TO_PRELOAD.length) {
+          setLoading(false);
+        }
+      };
+    });
+  }, []);
+
+  if (loading) return <LoadingScreen />;
+
   return (
     <Router>
       <App />
