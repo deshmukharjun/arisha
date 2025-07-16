@@ -193,7 +193,9 @@ const IMAGES_TO_PRELOAD = [
   "/photos/2023.png",
   "/photos/2024.png",
   "/photos/2025.png",
-  "/vite.svg"
+  "/vite.svg",
+  "/wordle-info.png",
+  "/connections-info.png",
 ];
 
 function LoadingScreen() {
