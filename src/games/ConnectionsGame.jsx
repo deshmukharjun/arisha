@@ -339,7 +339,10 @@ export default function ConnectionsGame() {
             </button>
             {/* Go To Memory Lane Button */}
             <button
-              onClick={() => (window.location.href = "/memory-lane")}
+              onClick={() => {
+                sessionStorage.setItem('playMemoryLaneMusic', 'true');
+                window.location.href = "/memory-lane";
+              }}
               className="mt-4 w-full px-4 py-3 bg-yellow-400 text-black font-bold rounded-md shadow-md hover:bg-yellow-300 transition-colors duration-200 text-lg"
             >
               Go To Memory Lane

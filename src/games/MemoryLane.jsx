@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 // Add Indie Flower font import
 const indieFlowerFontUrl = "https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap";
@@ -23,8 +23,45 @@ function getRotation(index) {
 }
 
 export default function MemoryLane() {
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    console.log("MemoryLane mounted");
+    const shouldPlay = sessionStorage.getItem('playMemoryLaneMusic') === 'true';
+    if (shouldPlay) {
+      sessionStorage.removeItem('playMemoryLaneMusic');
+      const audio = audioRef.current;
+      if (audio) {
+        console.log("Audio element found, attempting to play after user interaction...");
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log("Audio playback started successfully");
+            })
+            .catch((error) => {
+              console.log("Audio playback failed:", error);
+            });
+        }
+        audio.addEventListener('play', () => console.log('Audio play event triggered'));
+        audio.addEventListener('error', (e) => console.log('Audio error event:', e));
+      } else {
+        console.log("Audio element not found");
+      }
+    } else {
+      console.log("Not starting music: no user interaction flag");
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center py-8 px-4">
+    <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center py-8 px-4 relative">
+      {/* Home Button */}
+      <button
+        onClick={() => { window.location.href = "/"; }}
+        className="absolute top-4 left-4 bg-yellow-400 text-black px-4 py-2 rounded-md font-semibold shadow-md hover:bg-yellow-300 transition active:scale-95 z-20 text-base sm:text-base"
+      >
+        Home
+      </button>
       {/* Indie Flower font import */}
       <style>{`@import url('${indieFlowerFontUrl}'); .indie-flower { font-family: 'Indie Flower', cursive; }`}</style>
       <h1 className="text-3xl font-bold mb-8 text-yellow-400">Memory Lane</h1>
@@ -53,6 +90,8 @@ export default function MemoryLane() {
           </div>
         ))}
       </div>
+      {/* Audio Player for 'Perfect' by Ed Sheeran (hidden, autoplay, loop) */}
+      <audio ref={audioRef} src="/perfect.mp3" autoPlay loop style={{ display: 'none' }} />
     </div>
   );
 } 

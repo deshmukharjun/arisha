@@ -6,6 +6,7 @@ import welcomeImage from "/photos/welcomefinal.png";
 import Confetti from 'react-confetti';
 import { useEffect, useState } from "react"; // Ensure useState is imported if used in App
 import MemoryLane from "./games/MemoryLane";
+import LetterPage from "./games/LetterPage";
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -84,10 +85,19 @@ function WelcomePage() {
                 Connections
               </button>
               <button
-                onClick={() => handleChoice('/memory-lane')}
+                onClick={() => {
+                  sessionStorage.setItem('playMemoryLaneMusic', 'true');
+                  handleChoice('/memory-lane');
+                }}
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition active:scale-95"
               >
                 Memory Lane
+              </button>
+              <button
+                onClick={() => handleChoice('/letter')}
+                className="bg-pink-400 hover:bg-pink-500 text-white font-semibold py-2 px-4 rounded transition active:scale-95"
+              >
+                Letter
               </button>
               <button
                 onClick={() => setShowModal(false)}
@@ -121,6 +131,7 @@ function App() {
       />
       <Route path="/connections" element={<ConnectionsPage />} />
       <Route path="/memory-lane" element={<MemoryLane />} />
+      <Route path="/letter" element={<LetterPage />} />
     </Routes>
   );
 }
