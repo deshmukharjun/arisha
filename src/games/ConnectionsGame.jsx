@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 
 const GAME_DATA = [
   // Group 1: Yellow (Easiest)
@@ -67,6 +67,8 @@ export default function ConnectionsGame() {
   const [isGameOver, setIsGameOver] = useState(false);
   // State to track if the game was won
   const [hasWon, setHasWon] = useState(false);
+  const [showInfo, setShowInfo] = useState(true);
+  const audioRef = useRef(null);
 
   // --- Game Initialization ---
   // Initializes or resets the game state.
@@ -85,6 +87,17 @@ export default function ConnectionsGame() {
   useEffect(() => {
     initializeGame();
   }, [initializeGame]); // Dependency on initializeGame to ensure it's called on mount
+
+  // Effect to show info dialog and play voice.mp3 once on mount
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+    const timer = setTimeout(() => {
+      setShowInfo(false);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // --- Game End Condition Check ---
   // Effect to check for game win/loss conditions whenever solvedGroups or mistakesLeft change.
@@ -208,6 +221,20 @@ export default function ConnectionsGame() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white p-2 sm:p-3 flex flex-col items-center justify-center font-sans">
+      {/* Info Dialog Overlay */}
+      {showInfo && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-auto">
+          <div className="absolute inset-0 bg-black bg-opacity-40 z-[101] pointer-events-auto" />
+          <img
+            src="/connections-info.png"
+            alt="How to play Connections"
+            className="z-[102] max-w-[90vw] max-h-[90vh] drop-shadow-2xl rounded-2xl animate-fade-in"
+            style={{ pointerEvents: 'auto' }}
+          />
+        </div>
+      )}
+      {/* Play voice.mp3 once on mount */}
+      <audio ref={audioRef} src="/voice.mp3" autoPlay style={{ display: 'none' }} />
       {/* Back to Home Button */}
       <button
         onClick={handleBackToHome}

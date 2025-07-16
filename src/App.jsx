@@ -1,36 +1,45 @@
 // App.jsx
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
-import WordleMemoryPage from "./games/WordleMemory"; // Correct way to import a default export
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
+import WordleMemoryPage from "./games/WordleMemory";
 import ConnectionsPage from "./games/ConnectionsGame";
 import welcomeImage from "/photos/welcomefinal.png";
 import Confetti from 'react-confetti';
-import { useEffect, useState } from "react"; // Ensure useState is imported if used in App
+import { useEffect, useState, useRef } from "react";
 import MemoryLane from "./games/MemoryLane";
 import LetterPage from "./games/LetterPage";
 
 function WelcomePage() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const buttonAudioRef = useRef(null);
 
-  // Get window dimensions for confetti
   const { innerWidth: width, innerHeight: height } = window;
+
+  const playButtonSound = () => {
+    if (buttonAudioRef.current) {
+      buttonAudioRef.current.currentTime = 0;
+      buttonAudioRef.current.play().catch(() => {});
+    }
+  };
 
   const handleCelebrateClick = () => {
     setShowModal(true);
   };
 
-  const handleChoice = (route) => {
-    setShowModal(false);
-    navigate(route);
+  const handleChoiceWithSound = (route) => {
+    playButtonSound();
+    setTimeout(() => {
+      setShowModal(false);
+      navigate(route);
+    }, 150);
   };
 
   return (
     <div className="min-h-screen bg-bgDark text-white flex items-center justify-center px-4 py-8 relative overflow-hidden">
-      {/* Confetti will appear in the background */}
       <Confetti
         width={width}
         height={height}
-        numberOfPieces={120} // Slightly reduced for mobile performance
+        numberOfPieces={120}
         gravity={0.07}
         confettiSource={{
             x: 0,
@@ -60,26 +69,25 @@ function WelcomePage() {
           Happy 10 Year Anniversary!
         </p>
         <button
-          onClick={handleCelebrateClick}
+          onClick={() => { playButtonSound(); handleCelebrateClick(); }}
           className="bg-highlight text-black px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-black transition active:scale-95 w-full sm:w-auto text-lg sm:text-base"
         >
           Let's Celebrate!
         </button>
       </div>
-      {/* Modal Popup */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
           <div className="bg-white text-black rounded-lg shadow-xl p-8 max-w-xs w-full text-center animate-fade-in">
             <h2 className="text-2xl font-bold mb-4">What do you want to play?</h2>
             <div className="flex flex-col gap-4">
               <button
-                onClick={() => handleChoice('/memory')}
+                onClick={() => { setShowModal(false); handleChoiceWithSound('/memory'); }} // Use handleChoiceWithSound
                 className="bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 px-4 rounded transition active:scale-95"
               >
                 Wordle Memory
               </button>
               <button
-                onClick={() => handleChoice('/connections')}
+                onClick={() => { setShowModal(false); handleChoiceWithSound('/connections'); }} // Use handleChoiceWithSound
                 className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded transition active:scale-95"
               >
                 Connections
@@ -87,20 +95,23 @@ function WelcomePage() {
               <button
                 onClick={() => {
                   sessionStorage.setItem('playMemoryLaneMusic', 'true');
-                  handleChoice('/memory-lane');
+                  handleChoiceWithSound('/memory-lane');
                 }}
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition active:scale-95"
               >
                 Memory Lane
               </button>
               <button
-                onClick={() => handleChoice('/letter')}
+                onClick={() => { setShowModal(false); handleChoiceWithSound('/letter'); }} // Use handleChoiceWithSound
                 className="bg-pink-400 hover:bg-pink-500 text-white font-semibold py-2 px-4 rounded transition active:scale-95"
               >
                 Letter
               </button>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  playButtonSound();
+                  setTimeout(() => setShowModal(false), 150);
+                }}
                 className="mt-2 text-gray-500 hover:text-black text-sm underline"
               >
                 Cancel
@@ -109,35 +120,65 @@ function WelcomePage() {
           </div>
         </div>
       )}
+      <audio ref={buttonAudioRef} src="/button.mp3" preload="auto" style={{ display: 'none' }} />
     </div>
   );
 }
 
-
+// Main App component
 function App() {
-  // Remove useNavigate from here
-  // Handlers for navigation are now passed as props from within routed components
+  const location = useLocation(); // Get current location
+  const backgroundMusicRef = useRef(null);
+
+  useEffect(() => {
+    // Play background music when component mounts
+    if (backgroundMusicRef.current) {
+      backgroundMusicRef.current.play().catch(error => {
+        console.log("Autoplay of background music prevented:", error);
+      });
+    }
+  }, []); // Run once on mount
+
+  useEffect(() => {
+    // Control background music based on the route
+    if (backgroundMusicRef.current) {
+      if (location.pathname === '/memory-lane') {
+        backgroundMusicRef.current.pause();
+        backgroundMusicRef.current.currentTime = 0; // Reset for next time
+      } else {
+        backgroundMusicRef.current.play().catch(error => {
+          console.log("Autoplay of background music after route change prevented:", error);
+        });
+      }
+    }
+  }, [location.pathname]); // Re-run when the path changes
+
   return (
-    <Routes>
-      <Route path="/" element={<WelcomePage />} />
-      <Route
-        path="/memory"
-        element={
-          <WordleMemoryPage
-            onGameComplete={() => {}}
-            onPlayConnections={() => { window.location.href = '/connections'; }}
-          />
-        }
-      />
-      <Route path="/connections" element={<ConnectionsPage />} />
-      <Route path="/memory-lane" element={<MemoryLane />} />
-      <Route path="/letter" element={<LetterPage />} />
-    </Routes>
+    <>
+      {/* Persistent Background Music */}
+      <audio ref={backgroundMusicRef} src="/music.mp3" loop preload="auto" /> {/* Add your music.mp3 here */}
+
+      <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route
+          path="/memory"
+          element={
+            <WordleMemoryPage
+              onGameComplete={() => {}}
+              onPlayConnections={() => { window.location.href = '/connections'; }}
+            />
+          }
+        />
+        <Route path="/connections" element={<ConnectionsPage />} />
+        <Route path="/memory-lane" element={<MemoryLane />} />
+        <Route path="/letter" element={<LetterPage />} />
+      </Routes>
+    </>
   );
 }
 
 const IMAGES_TO_PRELOAD = [
-  "/photos/welcomefinal.png", // or change to your latest welcome image
+  "/photos/welcomefinal.png",
   "/photos/memory1.png",
   "/photos/memory2.png",
   "/photos/memory3.png",

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import WordleMemoryGame from './WordleMemoryGame'; // Assuming WordleMemoryGame is in the same directory
 
 // WordleMemoryPage component: This acts as the container for the WordleMemoryGame,
@@ -7,6 +7,27 @@ import WordleMemoryGame from './WordleMemoryGame'; // Assuming WordleMemoryGame 
 function WordleMemoryPage({ onGameComplete, onPlayConnections }) {
   const [allRoundsCompleted, setAllRoundsCompleted] = useState(false);
   const [gameKey, setGameKey] = useState(0); // Key to force re-render of WordleMemoryGame
+  const [showInfo, setShowInfo] = useState(true);
+  const audioRef = useRef(null);
+  const buttonAudioRef = useRef(null);
+
+  useEffect(() => {
+    const playVoice = () => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {});
+      }
+    };
+    // If button.mp3 is playing, wait for it to finish
+    if (buttonAudioRef.current && !buttonAudioRef.current.paused && !buttonAudioRef.current.ended) {
+      buttonAudioRef.current.addEventListener('ended', playVoice, { once: true });
+    } else {
+      playVoice();
+    }
+    const timer = setTimeout(() => {
+      setShowInfo(false);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Add back to home navigation
   const handleBackToHome = () => {
@@ -31,6 +52,21 @@ function WordleMemoryPage({ onGameComplete, onPlayConnections }) {
       >
         Home
       </button>
+      {/* Info Dialog Overlay */}
+      {showInfo && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-auto">
+          <div className="absolute inset-0 bg-black bg-opacity-40 z-[101] pointer-events-auto" />
+          <img
+            src="/wordle-info.png"
+            alt="How to play Wordle Memory"
+            className="z-[102] max-w-[90vw] max-h-[90vh] drop-shadow-2xl rounded-2xl animate-fade-in"
+            style={{ pointerEvents: 'auto' }}
+          />
+        </div>
+      )}
+      {/* Hidden audio elements for button and voice sounds */}
+      <audio ref={buttonAudioRef} src="/button.mp3" preload="auto" style={{ display: 'none' }} />
+      <audio ref={audioRef} src="/voice.mp3" preload="auto" style={{ display: 'none' }} />
       {allRoundsCompleted ? (
         <div className="text-center bg-[#333] rounded-xl p-6 w-full max-w-md shadow-lg">
           <h1 className="text-4xl font-bold mb-4 text-green-400">🎉 Memory Game Completed! 🎉</h1>
@@ -51,10 +87,12 @@ function WordleMemoryPage({ onGameComplete, onPlayConnections }) {
           </div>
         </div>
       ) : (
-        <WordleMemoryGame
-          key={gameKey}
-          onGameComplete={handleAllMemoryRoundsComplete}
-        />
+        <div className={showInfo ? 'pointer-events-none select-none opacity-60' : ''}>
+          <WordleMemoryGame
+            key={gameKey}
+            onGameComplete={handleAllMemoryRoundsComplete}
+          />
+        </div>
       )}
     </div>
   );
